@@ -1,7 +1,7 @@
 console.log('Application is starting.');
 
-//var socket = io.connect('http://localhost:4004');
-var socket = io();
+var socket = io.connect(window.location.hostname+':8080');
+//var socket = io();
 
 var canvas;
 var ctx;
