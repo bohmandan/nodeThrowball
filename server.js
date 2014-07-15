@@ -16,7 +16,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 server.listen(process.env.PORT || 3000, function() {
-    debug('Express server listening on port ' + server.address().port);
+    console.log('Express server listening on port ' + server.address().port);
 });
 
 app.get('/', function (req, res) {
