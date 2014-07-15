@@ -31,12 +31,6 @@ if ('development' == env) {
    // configure stuff here
 }
 
-// use websockets only
-io.set('transports', [
-    'websocket'
-]);
-
-
 /* GAME */
 
 /* OLD SETTINGS */
