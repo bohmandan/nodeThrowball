@@ -30,7 +30,7 @@ if ('development' == env) {
 }
 
 // use websockets only
-socket.set('transports', [
+io.set('transports', [
     'websocket'
 ]);
 
