@@ -1,7 +1,7 @@
 console.log('Application is starting.');
 
-var socket = io.connect(window.location.hostname);
-//var socket = io();
+//var socket = io.connect(window.location.hostname);
+var socket = io(); // should work according to: http://andriyadi.me/talk-develop-deploy-node-js-app-on-windows-azure/
 
 var canvas;
 var ctx;
