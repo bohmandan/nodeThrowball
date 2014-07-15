@@ -15,10 +15,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(process.env.PORT, function () {  //Updated for Azure
-  var addr = app.address();
-  console.log('   app listening on http://' + addr.address + ':' + addr.port);
-});
+server.listen(process.env.PORT || 8080);
 
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
@@ -31,6 +28,11 @@ var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
    // configure stuff here
 }
+
+// use websockets only
+socket.set('transports', [
+    'websocket'
+]);
 
 
 /* GAME */
