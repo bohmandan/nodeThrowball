@@ -1,0 +1,14 @@
+{
+  "name": "realtime-multiplayer-in-html5",
+  "author" : "Dan the man",
+  "description": "An article and demo explaining how multiplayer games work, with a demo in HTML5 using socket.io, node.js and canvas.",
+  "license": "MIT",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~4.0.0",
+    "socket.io": "~1.0.0"
+  },
+  "engine": {
+    "node": "latest"
+  }
+}
