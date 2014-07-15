@@ -15,7 +15,10 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(process.env.PORT || 8080);
+server.listen(process.env.PORT, function () {  //Updated for Azure
+  var addr = app.address();
+  console.log('   app listening on http://' + addr.address + ':' + addr.port);
+});
 
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
