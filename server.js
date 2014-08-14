@@ -66,6 +66,11 @@ var clientDragging;
 var lastActionDrag;
 
 
+function deleteFromArray(my_array, element) {
+  position = my_array.indexOf(element);
+  my_array.splice(position, 1);
+}
+
 
 function updateBounds() {
     console.log('running updateBounds');
@@ -75,9 +80,11 @@ function updateBounds() {
 
         io.to(clients[0]).emit('init',
             {
+                status: 'ok',
                 ballObj: ball,
                 boundsObj: bounds,
-                extraRight: 0
+                extraRight: 0,
+                playerNumber: 1
             });
     }
 
@@ -89,22 +96,26 @@ function updateBounds() {
         bounds.right = 600; /* for viewport player 1 */
         io.to(clients[0]).emit('init',
             {
+                status: 'ok',
                 ballObj: ball,
                 boundsObj: bounds,
-                extraRight: 0
+                extraRight: 0,
+                playerNumber: 1
             });
 
          bounds.left = 600; /* for viewport player 2 */
          bounds.right = 1200; /* for viewport player 2 */
         io.to(clients[1]).emit('init',
             {
+                status: 'ok',
                 ballObj: ball,
                 boundsObj: bounds,
-                extraRight: 600
+                extraRight: 600,
+                playerNumber: 2
             });
 
     }
-
+    
 }
 
 function animate() {
@@ -186,9 +197,20 @@ io.on('connection', function (socket) {
         clients.push(socket.id);
         console.log("CONNECT:" + ++clientsConnected);
         socket.userNumber = clientsConnected;
-
-
-        updateBounds();
+    
+        io.emit('newServerInfo',
+        {
+            msg: 'Amount of clients: '+socket.userNumber
+        });
+        if ((clientsConnected === 1) || (clientsConnected === 2)) {
+            updateBounds();
+        }
+        else {
+        io.emit('init',
+        {
+            status: 'denied',
+        });
+        }
 
 
 
@@ -210,7 +232,8 @@ io.on('disconnect', function () {
         //Useful to know when soomeone disconnects
     console.log('\t socket.io:: client disconnected ');
 
-
+    deleteFromArray(clients, socket.id);
+    
     console.log("DISCONNECT: ", --clientsConnected);
         //If the client was in a game, set by game_server.findGame,
         //we can tell the game server to update that game state.

@@ -3,6 +3,8 @@ console.log('Application is starting.');
 //var socket = io.connect(window.location.hostname);
 var socket = io(); // should work according to: http://andriyadi.me/talk-develop-deploy-node-js-app-on-windows-azure/
 
+console.log('connected via transport: '+socket.io.engine.transport.name); // should print "websocket". implement check later.
+
 var canvas;
 var ctx;
 /*
@@ -56,22 +58,6 @@ function drawBall() {
 		ctx.closePath();
 
 }
-
-socket.on('init', function (data) {
-	console.log(bounds);
-    ball = data.ballObj;
-    bounds = data.boundsObj;
-    console.log(data);
-    console.log(bounds);
-    extraRight = data.extraRight;
-    drawBall();
-  });
-
-socket.on('ballPos', function (data) {
-	ball.y = data.ballPosY;
-	ball.x = data.ballPosX - extraRight;
-	drawBall();
-});
 
 function updatePos(mousePosX, mousePosY, dragStatus) {
 /*  console.log('updatePos');
@@ -243,7 +229,34 @@ function grab()	{
 window.onload = function () {
 	canvas = document.getElementById('viewport');
 	ctx = canvas.getContext('2d');
-	grab();
 }
+
+socket.on('init', function (data) {
+    if (data.status === 'ok') {
+        console.log(bounds);
+        ball = data.ballObj;
+        bounds = data.boundsObj;
+        console.log(data);
+        console.log(bounds);
+        extraRight = data.extraRight;
+        grab();
+    }
+    if (data.status === 'denied') {
+        console.log('denied');
+        var msgElement = document.getElementById("msg");
+        msgElement.innerHTML = 'DENIED! Reload page please.';
+    }
+  });
+
+socket.on('ballPos', function (data) {
+	ball.y = data.ballPosY;
+	ball.x = data.ballPosX - extraRight;
+	drawBall();
+});
+
+socket.on('newServerInfo', function (data) {
+	var msg = data.msg;
+    console.log('Message from server: '+msg);
+});
 
 /* grabity / ball end */
