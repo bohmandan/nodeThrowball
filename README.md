@@ -1,6 +1,10 @@
 # nodeThrowball
 A demo multiplayer game in HTML5, using socket.io, node.js and canvas.
 
+## Demo:
+Video only for now, no live demo.
+Vdeo: https://youtu.be/WP1yQr2QUC8
+
 ## Built by:
 Generated skeleton with express-generator
 
