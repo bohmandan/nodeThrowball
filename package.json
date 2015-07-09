@@ -3,7 +3,7 @@
   "author": "Daniel Bohman <bohmandan@gmail.com>",
   "description": "A demo for a multiplayer game in HTML5, using socket.io, node.js and canvas.",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
