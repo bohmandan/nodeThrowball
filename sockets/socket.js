@@ -1,40 +1,14 @@
-/*  Copyright (c) 2012 Sven "FuzzYspo0N" Bergström
-    
-    written by : http://underscorediscovery.com
-    written for : http://buildnewgames.com/real-time-multiplayer/
-    
-    MIT Licensed.
+/*
+ * Serve content over a socket
+ */
 
-    Usage : node app.js
-*/
-
-// http://www.html5canvastutorials.com/labs/html5-canvas-google-bouncing-balls/
-
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-server.listen(process.env.PORT || 3000, function() {
-    console.log('Express server listening on port ' + server.address().port);
-});
-
-app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
-});
-
-app.use(express.static(__dirname  + '/public'));
-
-
-var env = process.env.NODE_ENV || 'development';
-if ('development' == env) {
-   // configure stuff here
-}
+module.exports = function (io) {
 
 /* GAME */
 
-/* OLD SETTINGS */
-
+var roomX = 600,
+    roomY = 600; // change to increase roomsize server side.
+    
 var ball = {
     x: 200, 
     y: 400,
@@ -45,7 +19,7 @@ var ball = {
 };
 var bounds = {
     left: 0,
-    right: 600
+    right: roomX
 };
 var currentX = ball.x;
 var lastX = currentX;
@@ -60,7 +34,7 @@ var bounce = 0.6;
 var mousePosX = 0;
 var mousePosY = 0;
 var clientsConnected = 0;
-var firstMultiBoundsX = 600;
+var firstMultiBoundsX = roomX;
 var clients = [];
 var clientDragging;
 var lastActionDrag;
@@ -73,48 +47,31 @@ function deleteFromArray(my_array, element) {
 
 
 function updateBounds() {
-    console.log('running updateBounds');
-
-    if (clientsConnected === 1) {
-        console.log('running updateBounds - clientsConnected === 1');
-
-        io.to(clients[0]).emit('init',
-            {
-                status: 'ok',
-                ballObj: ball,
-                boundsObj: bounds,
-                extraRight: 0,
-                playerNumber: 1
-            });
+    
+    console.log('running updateBounds - clientsConnected === ' + clientsConnected);
+    var clientsLength = clients.length;
+    for (var i = 0; i < clientsLength; i++) {
+        // myStringArray[i]
+        var extraRight = roomX * i;
+        bounds.left = roomX * i;
+        bounds.right = (roomX * i) + roomX;
+        var playerNumber = i + 1;
+        console.log('for client: ' + i);
+        console.log('extraRight: ' + extraRight);
+        console.log('playerNumber: ' + playerNumber);
+        
+        io.to(clients[i]).emit('init',
+        {
+            status: 'ok',
+            ballObj: ball,
+            boundsObj: bounds,
+            extraRight: extraRight,
+            playerNumber: i + 1,
+            clientsLength: clientsLength
+        });
+        
     }
-
-    if (clientsConnected === 2) {
-        console.log('running updateBounds - clientsConnected === 2');
-
-        firstMultiBoundsX = 1200;   /* for game room */
-        bounds.left = 0;  /* for viewport player 1 */
-        bounds.right = 600; /* for viewport player 1 */
-        io.to(clients[0]).emit('init',
-            {
-                status: 'ok',
-                ballObj: ball,
-                boundsObj: bounds,
-                extraRight: 0,
-                playerNumber: 1
-            });
-
-         bounds.left = 600; /* for viewport player 2 */
-         bounds.right = 1200; /* for viewport player 2 */
-        io.to(clients[1]).emit('init',
-            {
-                status: 'ok',
-                ballObj: ball,
-                boundsObj: bounds,
-                extraRight: 600,
-                playerNumber: 2
-            });
-
-    }
+    firstMultiBoundsX = roomX * clientsLength;
     
 }
 
@@ -164,11 +121,11 @@ else
         ball.y = ball.y + (ball.radius - ball.y);
     }
     // bottom
-    if(ball.y + ball.radius >= 600)
+    if(ball.y + ball.radius >= roomY)
     {
         ball.vy *= -1;
         ball.vy *= bounce;
-        ball.y = ball.y - ((Math.floor(ball.y) + ball.radius) - 600);
+        ball.y = ball.y - ((Math.floor(ball.y) + ball.radius) - roomY);
     }
     ball.y += ball.vy;
     ball.vy = ball.vy + (gravity / 40);
@@ -187,31 +144,20 @@ io.emit('ballPos',
 }
 setInterval(animate, 1000 / 45);
 
-        //Socket.io will call this function when a client connects,
-        //So we can send that client looking for a game to play,
-        //as well as give that client a unique ID to use so we can
-        //maintain the list if players.
+//Socket.io will call this function when a client connects,
+//So we can send that client looking for a game to play,
+//as well as give that client a unique ID to use so we can
+//maintain the list if players.
 io.on('connection', function (socket) {
         
         console.log(socket.id);
         clients.push(socket.id);
         console.log("CONNECT:" + ++clientsConnected);
         socket.userNumber = clientsConnected;
+        console.log('amountOfPlayers: ' + clientsConnected);
+        console.log('playerId: ' +clients.indexOf(socket.id));
     
-        io.emit('newServerInfo',
-        {
-            msg: 'Amount of clients: '+socket.userNumber
-        });
-        if ((clientsConnected === 1) || (clientsConnected === 2)) {
-            updateBounds();
-        }
-        else {
-        io.emit('init',
-        {
-            status: 'denied',
-        });
-        }
-
+        updateBounds(); // and emit init
 
 
 
@@ -234,8 +180,12 @@ io.on('disconnect', function () {
 
     deleteFromArray(clients, socket.id);
     
+    updateBounds(); // and emit init
+    
     console.log("DISCONNECT: ", --clientsConnected);
         //If the client was in a game, set by game_server.findGame,
         //we can tell the game server to update that game state.
 
 }); //socket.on disconnect
+    
+};

@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    block content
+  <!-- Library code -->
+  script(type="text/javascript" src="/javascripts/excanvas.js")
+  <!-- Load socket.io client side contents. -->
+  script(type="text/javascript" src="/socket.io/socket.io.js")
+  <!-- Finally, Load the game client code. -->
+  script(type="text/javascript" src="/javascripts/client.js")

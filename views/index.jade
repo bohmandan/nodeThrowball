@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  div(id="page")
+    canvas(id="viewport" width="600" height="600" style="background: #2391e8;")
+      p	Unfortunately your browser is not able to run this content.
+      p Please upgrade to the latest versions of Firefox, Safari, Chrome
+      p or Opera.
+    canvas(id="minimap" width="60" height="60" style="background: #2391e8;")
+      p	Unfortunately your browser is not able to run this content.
+      p Please upgrade to the latest versions of Firefox, Safari, Chrome
+      p or Opera.
+    p You are player number #[span(id="playnum-you")] of #[span(id="playnum-all")] players.
+    p(id="msg")	Click anywhere on the canvas and 'throw' the ball by moving the mouse and releasing the button.
+    p Based on source from
+      a(href="http://www.stevekane.com.au/test/canvas/throw.html") http://www.stevekane.com.au/test/canvas/throw.html

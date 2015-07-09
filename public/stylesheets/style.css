@@ -1,0 +1,16 @@
+#page {width: 600px; height: 600px ;	margin: auto; }	
+td {width: 500px;color: white;}
+#viewport:hover{cursor: pointer;}
+#viewport:hover{cursor: grab;}
+#viewport:hover{cursor: -webkit-grab;}
+#viewport:active{cursor: grabbing;}
+#viewport:active{cursor: -webkit-grabbing;}
+body {background: #222222;color: white;}
+.box {
+  -moz-box-sizing: border-box;
+  background: none repeat scroll 0 0 #FFFFE0;
+  border: 1px solid #FFA500;
+  height: 150px;
+  padding: 10px;
+  width: 150px;
+}
