@@ -1,17 +1,25 @@
-nodeThrowball
+# nodeThrowball
 =============
 
-nodeThrowBall - demo with HTML5
+nodeThrowBall - A demo multiplayer game in HTML5, using socket.io, node.js and canvas.
 
-
+## Built by:
 Generated skeleton with express-generator
-cmd: express nodeThrowball
 
-installed with:
+cmd: 
+```shell
+express nodeThrowball
+```
+
+### installed with:
 npm install
 
-Set debug with:
+### Set debug with:
 SET DEBUG=nodeThrowball:*
 
-Run with:
+### Run with:
 npm start
+
+
+## Install by:
+
